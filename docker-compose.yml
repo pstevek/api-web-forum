@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: barrows-db
+    image: postgres:14-alpine
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./data/dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_SERVER=${DB_HOST}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - barrows
+
+  app:
+    build: .
+    container_name: barrows-app
+    restart: always
+    command: >
+      sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/src
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - barrows
+
+  redis:
+    container_name: barrows-broker
+    image: redis:7.2.1-alpine3.18
+    ports:
+      - "6379:6379"
+    volumes:
+      - './data/redisdata:/data'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      retries: 3
+      timeout: 5s
+    networks:
+      - barrows
+
+networks:
+  barrows:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
+  redisdata:
+    driver: local
