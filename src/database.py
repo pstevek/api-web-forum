@@ -1,8 +1,10 @@
 import os
 
+from typing import Annotated
+from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 SQLALCHEMY_DATABASE_URL = "postgresql://{}:{}@{}:5432/{}".format(
     os.environ['DB_USER'],
@@ -18,10 +20,18 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+
+db_dependency = Annotated[Session, Depends(get_db)]
+
+
+def persist_db(db: db_dependency, model: Base) -> None:
+    db.add(model)
+    db.commit()
+    db.refresh(model)

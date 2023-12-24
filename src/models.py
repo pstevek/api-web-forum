@@ -10,9 +10,9 @@ class Role(Base):
     id = Column(Integer, primary_key=True, index=True)
     slug = Column(String, unique=True, index=True)
     name = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    deleted_at = Column(DateTime(timezone=True), onupdate=func.now())
+    created_at = Column(DateTime(timezone=False), server_default=func.now())
+    updated_at = Column(DateTime(timezone=False), onupdate=func.now())
+    deleted_at = Column(DateTime(timezone=False))
 
     user = relationship("User", back_populates="role", uselist=False)
 
@@ -26,14 +26,18 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     first_name = Column(String)
     last_name = Column(String)
-    hashed_password = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    deleted_at = Column(DateTime(timezone=True), onupdate=func.now())
+    password = Column(String)
+    created_at = Column(DateTime(timezone=False), server_default=func.now())
+    updated_at = Column(DateTime(timezone=False), onupdate=func.now())
+    deleted_at = Column(DateTime(timezone=False))
 
     role = relationship("Role", back_populates="user")
     posts = relationship("Post", back_populates="user")
     likes = relationship("Like", back_populates="user")
+    comments = relationship("Comment", back_populates="user")
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 class Post(Base):
@@ -43,10 +47,11 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     title = Column(String)
     content = Column(String)
+    slug = Column(String, unique=True, index=True)
     is_misleading = Column(Boolean, default=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    deleted_at = Column(DateTime(timezone=True), onupdate=func.now())
+    created_at = Column(DateTime(timezone=False), server_default=func.now())
+    updated_at = Column(DateTime(timezone=False), onupdate=func.now())
+    deleted_at = Column(DateTime(timezone=False))
 
     comments = relationship("Comment", back_populates="post")
     likes = relationship("Like", back_populates="post")
@@ -60,10 +65,10 @@ class Comment(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     post_id = Column(Integer, ForeignKey("posts.id"))
     content = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    deleted_at = Column(DateTime(timezone=True), onupdate=func.now())
-    
+    created_at = Column(DateTime(timezone=False), server_default=func.now())
+    updated_at = Column(DateTime(timezone=False), onupdate=func.now())
+    deleted_at = Column(DateTime(timezone=False))
+
     user = relationship("User", back_populates="comments")
     post = relationship("Post", back_populates="comments")
 
@@ -75,9 +80,9 @@ class Like(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     post_id = Column(Integer, ForeignKey("posts.id"))
     content = Column(String)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    deleted_at = Column(DateTime(timezone=True), onupdate=func.now())
+    created_at = Column(DateTime(timezone=False), server_default=func.now())
+    updated_at = Column(DateTime(timezone=False), onupdate=func.now())
+    deleted_at = Column(DateTime(timezone=False))
 
     user = relationship("User", back_populates="likes")
     post = relationship("Post", back_populates="likes")
