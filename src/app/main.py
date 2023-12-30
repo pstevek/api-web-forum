@@ -1,17 +1,15 @@
 import logging
-import app.api.models
 from fastapi import FastAPI
 from app.core.database import engine, Base
 from app.core.config import settings
-# from routers import auth, home, posts, users
+from starlette.middleware.cors import CORSMiddleware
+from app.api.routes import api_router
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('barrows-api')
 
 # Database initialization
 Base.metadata.create_all(bind=engine)
-
-# description = "Barrows | Forum Management API"
 
 # App initialization
 app = FastAPI(
@@ -20,12 +18,18 @@ app = FastAPI(
     version="1.0",
 )
 
-@app.get("/info")
-async def info():
-    return {
-        "PROJECT_NAME": settings.PROJECT_NAME,
-        "ALGORITHM": settings.ALGORITHM,
-    }
+# Set all CORS enabled origins
+if settings.BACKEND_CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+app.include_router(api_router, prefix=settings.API_V1_STR)
+
 #
 # # Add routes to app context
 # app.include_router(prefix="/api/v1", router=home.router)

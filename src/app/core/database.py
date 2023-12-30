@@ -1,11 +1,9 @@
-import os
-
 from typing import Annotated
 from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
-from src.app.core.config import settings
+from app.core.config import settings
 
 SQLALCHEMY_DATABASE_URL = "postgresql://{}:{}@{}:5432/{}".format(
     settings.DB_USER,

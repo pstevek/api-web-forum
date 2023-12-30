@@ -20,11 +20,14 @@ class UserCreate(BaseUser):
         orm_mode = True
 
 
+class UserUpdate(BaseModel):
+    first_name: str | None = None
+    last_name: str | None = None
+    email: EmailStr | None = None
+
+
 class UserResponse(BaseUser):
     role: str | None = None
-
-    class Config:
-        orm_mode = True
 
 
 # Comment
@@ -87,5 +90,8 @@ class PostResponse(BasePost):
     comments: List[CommentResponse] = []
     likes_count: int | None = None
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
 
 
