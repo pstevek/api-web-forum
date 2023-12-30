@@ -1,0 +1,91 @@
+from datetime import datetime
+
+from pydantic import BaseModel, EmailStr
+from typing import List
+
+
+# User
+class BaseUser(BaseModel):
+    id: int | None = None
+    first_name: str
+    last_name: str
+    username: str
+    email: EmailStr
+
+
+class UserCreate(BaseUser):
+    password: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserResponse(BaseUser):
+    role: str | None = None
+
+    class Config:
+        orm_mode = True
+
+
+# Comment
+class BaseComment(BaseModel):
+    content: str
+
+
+class CommentCreate(BaseComment):
+    pass
+
+
+class CommentUpdate(BaseComment):
+    pass
+
+
+class CommentResponse(BaseComment):
+    id: int | None = None
+    user_id: int
+    post_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class Like(BaseModel):
+    user: str
+
+
+class LikeResponse(BaseModel):
+    id: int | None = None
+    user_id: int
+    post_id: int
+
+    class Config:
+        orm_mode = True
+
+
+# Post
+class BasePost(BaseModel):
+    id: int | None = None
+    title: str
+    content: str
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    deleted_at: datetime | None = None
+
+
+class PostCreate(BasePost):
+    slug: str | None = None
+
+
+class PostUpdate(BaseModel):
+    title: str | None = None
+    content: str | None = None
+
+
+class PostResponse(BasePost):
+    slug: str
+    likes: List[LikeResponse] = []
+    comments: List[CommentResponse] = []
+    likes_count: int | None = None
+
+
+

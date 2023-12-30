@@ -30,7 +30,7 @@ services:
     container_name: barrows-app
     restart: always
     command: >
-      sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     ports:
       - "8000:8000"
     env_file:
