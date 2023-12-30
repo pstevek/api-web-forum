@@ -1,7 +1,7 @@
 import models
 import logging
 from fastapi import FastAPI
-from database import engine
+from src.core.database import engine
 from routers import auth, home, posts, users
 
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +15,8 @@ description = "Barrows | Forum Management API"
 # App initialization
 app = FastAPI(
     title="Barrows API",
-    description=description, version="1.0",
+    description=description,
+    version="1.0",
 )
 
 # Add routes to app context
