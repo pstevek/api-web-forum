@@ -1,12 +1,9 @@
-from typing import Annotated, Optional
-
-from src.app.api.repositories.base import BaseRepository
-from src.app.core.database import db_dependency, persist_db
-from src.app.api.models import User
-from src.app.api.schemas import UserCreate, UserUpdate
-from src.app.api.dependencies import pwd_context
+from app.api.repositories.base import BaseRepository
+from app.core.database import persist_db, use_database_session
+from app.api.models import User
+from app.api.schemas import UserCreate, UserUpdate
+from app.api.dependencies import pwd_context
 from fastapi import status, HTTPException
-from fastapi.encoders import jsonable_encoder
 
 
 class UserRepository(BaseRepository):
@@ -49,4 +46,6 @@ class UserRepository(BaseRepository):
         return super().update(db_obj=user, object_in=update_data)
 
 
-user_repository = UserRepository(model=User, db=db_dependency)
+with use_database_session() as session:
+    user_repository = UserRepository(model=User, db=session)
+

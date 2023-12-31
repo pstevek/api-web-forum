@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Any, TypeVar, Type, Optional, Dict, Union
-from src.app.core.database import db_dependency, persist_db
+from app.core.database import db_dependency, persist_db
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
 
@@ -15,7 +15,7 @@ class BaseRepository:
         self.db = db
 
     def get(self, model_id: int) -> Optional[ModelType]:
-        return self.db.query(model=self.model).filter(self.model.id == model_id).first()
+        return self.db.query(self.model).filter(self.model.id == model_id).first()
 
     def create(self, object_in: CreateSchemaType) -> ModelType:
         request_data = jsonable_encoder(object_in)

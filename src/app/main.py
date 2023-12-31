@@ -1,6 +1,7 @@
 import logging
 from fastapi import FastAPI
-from app.core.database import engine, Base
+from app.api import models
+from app.core.database import engine
 from app.core.config import settings
 from starlette.middleware.cors import CORSMiddleware
 from app.api.routes import api_router
@@ -9,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('barrows-api')
 
 # Database initialization
-Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 # App initialization
 app = FastAPI(

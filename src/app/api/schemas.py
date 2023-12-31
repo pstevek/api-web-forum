@@ -90,7 +90,8 @@ class PostResponse(BasePost):
     comments: List[CommentResponse] = []
     likes_count: int | None = None
 
-class Token(BaseModel):
+
+class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
