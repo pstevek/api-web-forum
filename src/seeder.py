@@ -1,7 +1,7 @@
 import logging
 from sqlalchemy.exc import IntegrityError
 from models import Role, User
-from database import SessionLocal
+from app.core.database import SessionLocal
 from datetime import datetime
 from passlib.context import CryptContext
 
@@ -56,3 +56,7 @@ def run_seeder(table: str) -> None:
     except IntegrityError:
         logging.error("Duplicate transaction detected. Seeder likely ran already")
 
+
+if __name__ == "__main__":
+    run_seeder("roles")
+    run_seeder("users")

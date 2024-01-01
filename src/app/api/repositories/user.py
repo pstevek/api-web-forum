@@ -41,7 +41,7 @@ class UserRepository(BaseRepository):
         update_data = user_request if isinstance(user_request, dict) else user_request.dict(exclude_unset=True)
 
         if update_data.get("password"):
-            update_data["password"] = pwd_context.hash(user_request["password"])
+            update_data["password"] = pwd_context.hash(update_data["password"])
 
         return super().update(db_obj=user, object_in=update_data)
 

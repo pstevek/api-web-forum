@@ -20,6 +20,15 @@ class AuthService:
     def __init__(self):
         self.repository = user_repository
 
+    @staticmethod
+    def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+        expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
+        to_encode = data.copy()
+        to_encode.update({"exp": expire})
+        encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
+
+        return encoded_jwt
+
     def authenticate_user(self, request: Annotated[OAuth2PasswordRequestForm, Depends()]) -> User | HTTPException:
         try:
             user = self.repository.get_by_username(request.username)
@@ -37,16 +46,7 @@ class AuthService:
                 detail=f"Error occurred while performing request :: {traceback.format_exc()}"
             )
 
-    @staticmethod
-    def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
-        expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
-        to_encode = data.copy()
-        to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
-
-        return encoded_jwt
-
-    def get_current_user(self, token: token_dependency) -> UserResponse:
+    def get_current_user(self, token: token_dependency) -> User:
         try:
             payload = jwt.decode(token, secret_key, algorithms=[algorithm])
             username: str = payload.get('sub')
@@ -55,11 +55,7 @@ class AuthService:
             if all(field is None for field in [username, user_id]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not authenticate user.')
 
-            user = self.repository.get(user_id=user_id)
-            response = jsonable_encoder(user)
-            response['role'] = user.role.name
-
-            return UserResponse(**response)
+            return self.repository.get(user_id=user_id)
         except jwt.ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

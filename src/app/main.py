@@ -3,11 +3,8 @@ from fastapi import FastAPI
 from app.api import models
 from app.core.database import engine
 from app.core.config import settings
+from app.api.routes.index import api_router
 from starlette.middleware.cors import CORSMiddleware
-from app.api.routes import api_router
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('barrows-api')
 
 # Database initialization
 models.Base.metadata.create_all(bind=engine)
@@ -30,10 +27,3 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
-
-#
-# # Add routes to app context
-# app.include_router(prefix="/api/v1", router=home.router)
-# app.include_router(prefix="/api/v1", router=auth.router)
-# app.include_router(prefix="/api/v1", router=users.router)
-# app.include_router(prefix="/api/v1", router=posts.router)

@@ -6,7 +6,6 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from models import Post, User
 from database import db_dependency, persist_db
 from schemas import PostCreate, PostUpdate, PostResponse, UserResponse
-from starlette import status
 from starlette.responses import JSONResponse
 from slugify import slugify
 from fastapi.encoders import jsonable_encoder

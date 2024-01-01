@@ -26,12 +26,14 @@ class BaseRepository:
         return db_obj
 
     def update(self, db_obj: ModelType, object_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
+        print("*** debug (before) ***", db_obj.__dict__)
         request_data = jsonable_encoder(db_obj)
         update_data = object_in if isinstance(object_in, dict) else object_in.dict(exclude_unset=True)
 
         for field in request_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
+        print("*** debug (after) ***", db_obj.__dict__)
 
         persist_db(self.db, db_obj)
 

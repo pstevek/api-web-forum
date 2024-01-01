@@ -1,22 +1,26 @@
 import traceback
 from fastapi import HTTPException, status
-from fastapi.encoders import jsonable_encoder
 from app.api.repositories.user import user_repository
-from app.api.schemas import UserCreate, UserResponse
+from app.api.schemas import UserCreate, UserUpdate
+from app.api.models import User
 
 
 class UserService:
     def __init__(self):
         self.repository = user_repository
 
-    def create_user(self, request: UserCreate) -> UserResponse | HTTPException:
+    def create_user(self, request: UserCreate) -> User | HTTPException:
         try:
-            new_user = self.repository.create(user_request=request)
+            return self.repository.create(user_request=request)
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error occurred while performing request :: {traceback.format_exc()}"
+            )
 
-            response = jsonable_encoder(new_user)
-            response['role'] = new_user.role.name
-
-            return UserResponse(**response)
+    def update_user(self, request: UserUpdate, user: User) -> User | HTTPException:
+        try:
+            return self.repository.update(user_request=request, user=user)
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
