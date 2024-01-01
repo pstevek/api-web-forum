@@ -3,5 +3,5 @@
 set -e
 
 echo "Seeding tables"
-docker exec -it barrows-db psql -U postgres -d barrows -f /tmp/data.sql
+docker exec -it barrows-app python seeder.py
 echo "Seeding completed"
