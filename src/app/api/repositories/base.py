@@ -1,8 +1,10 @@
 from datetime import datetime
-from typing import Any, TypeVar, Type, Optional, Dict, Union
+from typing import Any, TypeVar, Type, Optional, Dict, Union, List
 from app.core.database import db_dependency, persist_db
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import joinedload, Query
+from sqlalchemy import and_
 
 ModelType = TypeVar("ModelType", bound=Any)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -14,8 +16,26 @@ class BaseRepository:
         self.model = model
         self.db = db
 
-    def get(self, model_id: int) -> Optional[ModelType]:
-        return self.db.query(self.model).filter(self.model.id == model_id).first()
+    def all(self, skip: int = 0, limit: int = 100, joint_tables=None) -> List[ModelType]:
+        query = self.db.query(self.model)
+        query = self.add_joint_tables(query, joint_tables)
+
+        return query.filter(self.model.deleted_at.is_(None)) \
+            .order_by(self.model.created_at.desc()) \
+            .offset(skip) \
+            .limit(limit) \
+            .all()
+
+    def get(self, model_id: int, joint_tables=None) -> Optional[ModelType]:
+        query = self.db.query(self.model)
+        query = self.add_joint_tables(query, joint_tables)
+
+        return query.filter(
+            and_(
+                self.model.id == model_id,
+                self.model.deleted_at.is_(None)
+            )
+        ).first()
 
     def create(self, object_in: CreateSchemaType) -> ModelType:
         request_data = jsonable_encoder(object_in)
@@ -26,14 +46,12 @@ class BaseRepository:
         return db_obj
 
     def update(self, db_obj: ModelType, object_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
-        print("*** debug (before) ***", db_obj.__dict__)
         request_data = jsonable_encoder(db_obj)
         update_data = object_in if isinstance(object_in, dict) else object_in.dict(exclude_unset=True)
 
         for field in request_data:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
-        print("*** debug (after) ***", db_obj.__dict__)
 
         persist_db(self.db, db_obj)
 
@@ -45,3 +63,12 @@ class BaseRepository:
         else:
             self.db.delete(db_obj)
             self.db.commit()
+
+    @staticmethod
+    def add_joint_tables(query: Query, joint_tables=None) -> Query:
+        if joint_tables is not None and isinstance(joint_tables, list):
+            for table in joint_tables:
+                if isinstance(table, str):
+                    query = query.options(joinedload(table))
+
+        return query

@@ -5,9 +5,7 @@ from datetime import datetime, timedelta
 from app.core.config import settings
 from app.api.models import User
 from app.api.dependencies import pwd_context, token_dependency
-from app.api.schemas import UserResponse
 from fastapi import Depends, HTTPException, status
-from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 
@@ -55,7 +53,12 @@ class AuthService:
             if all(field is None for field in [username, user_id]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not authenticate user.')
 
-            return self.repository.get(user_id=user_id)
+            user = self.repository.get(model_id=user_id)
+
+            if not user:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+            return user
         except jwt.ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
