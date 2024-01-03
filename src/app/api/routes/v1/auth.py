@@ -1,6 +1,7 @@
+from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
-from typing import Annotated
+from app.api.responses import format_user_response, format_token_response
 from app.api.services.user import user_service
 from app.api.services.auth import auth_service
 from app.api.schemas import UserCreate, UserResponse, TokenResponse
@@ -18,10 +19,12 @@ def login(request: Annotated[OAuth2PasswordRequestForm, Depends()]):
         expires_delta=timedelta(minutes=200)
     )
 
-    return TokenResponse(**{"access_token": access_token})
+    return format_token_response(access_token)
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 def register(request: UserCreate):
-    return user_service.create_user(request)
+    user = user_service.create_user(request)
+
+    return format_user_response(user)
 
