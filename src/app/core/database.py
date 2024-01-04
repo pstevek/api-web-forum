@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session, sessionmaker, scoped_session
 from app.core.config import settings
 
 SQLALCHEMY_DATABASE_URL = "postgresql://{}:{}@{}:5432/{}".format(
@@ -15,26 +15,10 @@ SQLALCHEMY_DATABASE_URL = "postgresql://{}:{}@{}:5432/{}".format(
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = scoped_session(session_factory)
 
 Base = declarative_base()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-db_dependency = Annotated[Session, Depends(get_db)]
-
-
-def persist_db(db: db_dependency, model: Base) -> None:
-    db.add(model)
-    db.commit()
-    db.refresh(model)
 
 
 class DatabaseSessionMixin:
@@ -52,7 +36,18 @@ class DatabaseSessionMixin:
             pass
         finally:
             self.db.close()
+            SessionLocal.remove()
 
 
 def use_database_session():
     return DatabaseSessionMixin()
+
+
+db_dependency = Annotated[Session, Depends(use_database_session)]
+
+
+def persist_db(db: db_dependency, model: Base) -> None:
+    print("### NEW MODEL ###", model.__dict__)
+    db.add(model)
+    db.commit()
+    db.refresh(model)
