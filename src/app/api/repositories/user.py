@@ -7,6 +7,8 @@ from sqlalchemy import and_
 
 
 class UserRepository(BaseRepository):
+    model = User
+
     def get_by_username(self, username: str) -> User:
         return self.db.query(self.model).filter(
             and_(
@@ -37,5 +39,5 @@ class UserRepository(BaseRepository):
 
 
 with use_database_session() as session:
-    user_repository = UserRepository(model=User, db=session)
+    user_repository = UserRepository(db=session)
 

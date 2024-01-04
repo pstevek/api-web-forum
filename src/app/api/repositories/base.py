@@ -12,8 +12,9 @@ UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
 class BaseRepository:
-    def __init__(self, model: Type[ModelType], db: db_dependency) -> None:
-        self.model = model
+    model = ModelType
+
+    def __init__(self, db: db_dependency) -> None:
         self.db = db
 
     def all(self, skip: int = 0, limit: int = 100, joint_tables=None) -> List[ModelType]:
@@ -39,7 +40,7 @@ class BaseRepository:
 
     def create(self, object_in: CreateSchemaType) -> ModelType:
         request_data = jsonable_encoder(object_in)
-        db_obj = self.db.model(**request_data)
+        db_obj = self.model(**request_data)
 
         persist_db(self.db, db_obj)
 
@@ -64,11 +65,11 @@ class BaseRepository:
             self.db.delete(db_obj)
             self.db.commit()
 
-    @staticmethod
-    def add_joint_tables(query: Query, joint_tables=None) -> Query:
+    def add_joint_tables(self, query: Query, joint_tables=None) -> Query:
         if joint_tables is not None and isinstance(joint_tables, list):
+            self.db.expunge_all()
             for table in joint_tables:
                 if isinstance(table, str):
-                    query = query.options(joinedload(table))
+                    query = query.options(joinedload(getattr(self.model, table)))
 
         return query
