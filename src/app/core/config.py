@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     DB_HOST: str
     TOKEN_EXPIRY: int
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
+    DEBUG: bool = True
 
 
 settings = Settings()
