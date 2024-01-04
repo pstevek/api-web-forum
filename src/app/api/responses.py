@@ -37,6 +37,7 @@ def format_post_response(post: Post) -> PostResponse:
 
     if post_likes:
         response['likes'] = [format_like(like) for like in post_likes]
+        response['likes_count'] = len(response['likes'])
     if post_comments:
         response['comments'] = [format_comment(comment) for comment in post_comments]
 

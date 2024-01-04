@@ -45,25 +45,13 @@ class CommentUpdate(BaseComment):
 
 
 class CommentResponse(BaseComment):
-    id: int | None = None
-    user_id: int
-    post_id: int
-
-    class Config:
-        orm_mode = True
-
-
-class Like(BaseModel):
     user: str
+    post_slug: str
 
 
 class LikeResponse(BaseModel):
-    id: int | None = None
-    user_id: int
-    post_id: int
-
-    class Config:
-        orm_mode = True
+    user: str
+    post_slug: str
 
 
 # Post
@@ -87,6 +75,7 @@ class PostUpdate(BaseModel):
 
 class PostResponse(BasePost):
     slug: str
+    user: str
     likes: List[LikeResponse] = []
     comments: List[CommentResponse] = []
     likes_count: int | None = None
