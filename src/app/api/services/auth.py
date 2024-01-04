@@ -30,19 +30,19 @@ class AuthService:
     def authenticate_user(self, request: Annotated[OAuth2PasswordRequestForm, Depends()]) -> User | HTTPException:
         try:
             user = self.repository.get_by_username(request.username)
-
-            if not user:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-            # Authenticate user
-            if not pwd_context.verify(request.password, user.password):
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
-
-            return user
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error occurred while performing request :: {traceback.format_exc()}"
             )
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        # Authenticate user
+        if not pwd_context.verify(request.password, user.password):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+
+        return user
 
     def get_current_user(self, token: token_dependency) -> User:
         try:
