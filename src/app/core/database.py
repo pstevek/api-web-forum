@@ -47,7 +47,6 @@ db_dependency = Annotated[Session, Depends(use_database_session)]
 
 
 def persist_db(db: db_dependency, model: Base) -> None:
-    print("### NEW MODEL ###", model.__dict__)
     db.add(model)
     db.commit()
     db.refresh(model)
