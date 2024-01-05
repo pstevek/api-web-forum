@@ -17,7 +17,7 @@ class BaseRepository:
     def __init__(self, db: db_dependency) -> None:
         self.db = db
 
-    def all(self, skip: int = 0, limit: int = 100, joint_tables=None) -> List[ModelType]:
+    def all(self, skip: int = 0, limit: int = 100, joint_tables=None) -> List[model]:
         query = self.db.query(self.model)
         query = self.add_joint_tables(query, joint_tables)
 
@@ -27,7 +27,7 @@ class BaseRepository:
             .limit(limit) \
             .all()
 
-    def get(self, model_id: int, joint_tables=None) -> Optional[ModelType]:
+    def get(self, model_id: int, joint_tables=None) -> Optional[model]:
         query = self.db.query(self.model)
         query = self.add_joint_tables(query, joint_tables)
 
@@ -38,7 +38,7 @@ class BaseRepository:
             )
         ).first()
 
-    def create(self, object_in: CreateSchemaType) -> ModelType:
+    def create(self, object_in: CreateSchemaType) -> model:
         request_data = jsonable_encoder(object_in)
         db_obj = self.model(**request_data)
 
@@ -46,7 +46,7 @@ class BaseRepository:
 
         return db_obj
 
-    def update(self, db_obj: ModelType, object_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
+    def update(self, db_obj: model, object_in: Union[UpdateSchemaType, Dict[str, Any]]) -> model:
         request_data = jsonable_encoder(db_obj)
         update_data = object_in if isinstance(object_in, dict) else object_in.dict(exclude_unset=True)
 
@@ -58,7 +58,7 @@ class BaseRepository:
 
         return db_obj
 
-    def delete(self, db_obj: ModelType, soft_delete: bool = True) -> None:
+    def delete(self, db_obj: model, soft_delete: bool = True) -> None:
         if soft_delete:
             db_obj.deleted_at = datetime.now()
         else:

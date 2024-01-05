@@ -37,6 +37,10 @@ class UserRepository(BaseRepository):
 
         return super().update(db_obj=user, object_in=update_data)
 
+    @staticmethod
+    def is_admin(user: User) -> bool:
+        return user.role.slug == 'moderator'
+
 
 with use_database_session() as session:
     user_repository = UserRepository(db=session)
