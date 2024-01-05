@@ -1,14 +1,21 @@
-import http
-import time
-from fastapi import Request
 from fastapi import FastAPI
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from starlette import status
+from starlette.exceptions import HTTPException
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
 from app.api import models
+from app.api.middlewares.logging import log_request_middleware
 from app.core.database import engine
 from app.core.config import settings
-from app.core.logger import logger
 from app.api.routes.index import api_router
-from app.api.middlewares.logging import log_request_middleware
-from starlette.middleware.cors import CORSMiddleware
+from app.core.exception_handlers import (
+    request_validation_exception_handler,
+    http_exception_handler,
+    unhandled_exception_handler
+)
 
 # Database initialization
 models.Base.metadata.create_all(bind=engine)
@@ -18,10 +25,20 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
     version="1.0",
+    debug=settings.DEBUG
 )
 
-
 app.middleware("http")(log_request_middleware)
+app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
+# app.add_exception_handler(HTTPException, http_exception_handler)
+# app.add_exception_handler(Exception, unhandled_exception_handler)
+
+# @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request: Request, exc: RequestValidationError):
+#     return JSONResponse(
+#         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+#         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+#     )
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
