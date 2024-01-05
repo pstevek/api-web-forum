@@ -1,8 +1,8 @@
 import traceback
-
+from app.api.services.user import user_service
 from app.api.models import Post, User
 from app.api.repositories.post import post_repository
-from app.api.schemas import PostCreate, CommentCreate
+from app.api.schemas import PostCreate, PostUpdate, CommentCreate
 from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException
 from starlette import status
@@ -15,10 +15,7 @@ class PostService:
 
     def get_all_posts(self, skip: int = 0, limit: int = 100):
         try:
-            posts = self.repository.all(skip, limit, joint_tables=self.tables)
-            from fastapi.encoders import jsonable_encoder
-            print("ALL_POSTS", jsonable_encoder(posts))
-            return posts
+            return self.repository.all(skip, limit, joint_tables=self.tables)
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -84,6 +81,23 @@ class PostService:
 
         try:
             return self.repository.create_post_like(user_id=user.id, post=post)
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error occurred while performing request :: {traceback.format_exc()}"
+            )
+
+    def update_post(self, post_slug: str, user: User, request: PostUpdate) -> Post:
+        if not user_service.is_admin(user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have permission to perform this operation"
+            )
+
+        post = self.get_post_by_slug(post_slug)
+
+        try:
+            return self.repository.update(post, request)
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

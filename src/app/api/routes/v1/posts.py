@@ -4,7 +4,7 @@ from isort import comments
 
 from app.api import responses
 from app.api.dependencies import token_dependency
-from app.api.schemas import PostResponse, PostCreate, CommentCreate
+from app.api.schemas import PostResponse, PostCreate, CommentCreate, PostUpdate
 from app.api.services.auth import auth_service
 from app.api.services.post import post_service
 
@@ -23,6 +23,14 @@ async def get_post(post_slug: str):
     post = post_service.get_post_by_slug(post_slug)
 
     return responses.format_post_response(post)
+
+
+@router.put("/{post_slug}", status_code=status.HTTP_200_OK, response_model=PostResponse)
+async def flag_post(token: token_dependency, post_slug: str, request: PostUpdate):
+    user = auth_service.get_current_user(token)
+    updated_post = post_service.update_post(post_slug, user, request)
+
+    return responses.format_post_response(updated_post)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=PostResponse)

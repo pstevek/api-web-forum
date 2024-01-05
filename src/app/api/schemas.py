@@ -69,13 +69,13 @@ class PostCreate(BasePost):
 
 
 class PostUpdate(BaseModel):
-    title: str | None = None
-    content: str | None = None
+    is_misleading: bool
 
 
 class PostResponse(BasePost):
     slug: str
     user: str
+    is_misleading: bool
     likes: List[LikeResponse] = []
     comments: List[CommentResponse] = []
     likes_count: int | None = None

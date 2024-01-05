@@ -9,6 +9,9 @@ class UserService:
     def __init__(self):
         self.repository = user_repository
 
+    def is_admin(self, user: User) -> bool:
+        return self.repository.is_admin(user)
+
     def create_user(self, request: UserCreate) -> User | HTTPException:
         try:
             return self.repository.create(user_request=request)
