@@ -3,22 +3,34 @@ from app.api.models import Post, Comment, Like
 from app.api.repositories.base import BaseRepository
 from app.api.schemas import PostCreate, CommentCreate
 from app.core.database import use_database_session, persist_db
-from sqlalchemy import and_
+from sqlalchemy import and_, desc, asc, func
 from slugify import slugify
 
 
 class PostRepository(BaseRepository):
     model = Post
 
-    def all(self, query: str | None = None, skip: int = 0, limit: int = 100, joint_tables=None) -> List[model]:
+    def get_all_posts(
+            self,
+            query: str | None = None,
+            skip: int = 0,
+            limit: int = 100,
+            joint_tables: list | None = None
+    ) -> List[model]:
+        orderby = None
         filtered = self.model.deleted_at.is_(None)
         if query is not None:
             filtered = and_(
                 filtered,
                 self.model.content.contains(query)
             )
+            orderby = desc(
+                func.length(self.model.content) - func.length(func.replace(self.model.content, query, ""))
+            )
 
-        return super().all(filtered, skip, limit, joint_tables)
+        return super().all(
+            skip=skip, limit=limit, filtered=filtered, orderby=orderby, joint_tables=joint_tables
+        )
 
     def get_post_by_slug(self, slug: str, joint_tables=None) -> model:
         query = self.db.query(self.model)
