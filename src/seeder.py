@@ -1,7 +1,10 @@
 import logging
+import httpx
+import random
 from sqlalchemy.exc import IntegrityError
-from models import Role, User
+from app.api.models import Role, User, Post
 from app.core.database import SessionLocal
+from slugify import slugify
 from datetime import datetime
 from passlib.context import CryptContext
 
@@ -27,7 +30,16 @@ tables = {
             password=pwd_context.hash('password'),
             role_id=2,
             created_at=datetime.now(),
-        )
+        ),
+        User(
+            email="user@barrows.co.za",
+            first_name="Test",
+            last_name="User",
+            username="user.barrows",
+            password=pwd_context.hash('password'),
+            role_id=2,
+            created_at=datetime.now(),
+        ),
     ],
 
     'roles': [
@@ -41,7 +53,8 @@ tables = {
             name="Regular",
             created_at=datetime.now()
         )
-    ]
+    ],
+    'posts': []
 }
 
 
@@ -58,5 +71,26 @@ def run_seeder(table: str) -> None:
 
 
 if __name__ == "__main__":
+    _api_posts_endpoint = "https://api.slingacademy.com/v1/sample-data/blog-posts"
+    try:
+        response = httpx.get(_api_posts_endpoint)
+        response.raise_for_status()
+        blogs = response.json()['blogs']
+        for i in range(0, 10):
+            tables['posts'].append(
+                Post(
+                    user_id=random.randint(2, 3),
+                    title=blogs[i]['title'],
+                    slug=slugify(blogs[i]['title']),
+                    content=blogs[i]['content_html']
+                )
+            )
+
+    except httpx.RequestError as exc:
+        print(f"An error occurred while requesting {exc.request.url!r}.")
+    except httpx.HTTPStatusError as exc:
+        print(f"Error response {exc.response.status_code} while requesting {exc.request.url!r}.")
+
     run_seeder("roles")
     run_seeder("users")
+    run_seeder("posts")

@@ -17,7 +17,7 @@ from app.core.exception_handlers import (
     unhandled_exception_handler
 )
 
-# Database initialization
+# Database schemas initialization
 models.Base.metadata.create_all(bind=engine)
 
 # App initialization
@@ -28,17 +28,11 @@ app = FastAPI(
     debug=settings.DEBUG
 )
 
+# Middlewares
 app.middleware("http")(log_request_middleware)
 app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
 # app.add_exception_handler(HTTPException, http_exception_handler)
 # app.add_exception_handler(Exception, unhandled_exception_handler)
-
-# @app.exception_handler(RequestValidationError)
-# async def validation_exception_handler(request: Request, exc: RequestValidationError):
-#     return JSONResponse(
-#         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-#         content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
-#     )
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
