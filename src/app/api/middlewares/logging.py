@@ -1,5 +1,6 @@
 import http
 import time
+from datetime import datetime
 from fastapi import Request
 from app.core.logger import logger
 
@@ -12,6 +13,7 @@ async def log_request_middleware(request: Request, call_next):
     formatted_process_time = "{0:.2f}".format(process_time)
     host = getattr(getattr(request, "client", None), "host", None)
     port = getattr(getattr(request, "client", None), "port", None)
+    timestamp = datetime.utcnow().strftime("%d/%m/%Y %H:%M:%S")
 
     try:
         status_phrase = http.HTTPStatus(response.status_code).phrase
@@ -19,7 +21,9 @@ async def log_request_middleware(request: Request, call_next):
         status_phrase = ""
 
     logger.info(
-        f'{host}:{port} - "{request.method} {url}" - {response.status_code} {status_phrase} {formatted_process_time}ms'
+        f"{host}:{port} - {timestamp} - "
+        f"\"{request.method} {url}\" - "
+        f"{response.status_code} {status_phrase} {formatted_process_time}ms"
     )
 
     return response
