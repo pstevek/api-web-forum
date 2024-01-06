@@ -4,6 +4,7 @@ import random
 from sqlalchemy.exc import IntegrityError
 from app.api.models import Role, User, Post
 from app.core.database import SessionLocal
+from app.core.config import settings
 from slugify import slugify
 from datetime import datetime
 from passlib.context import CryptContext
@@ -71,7 +72,7 @@ def run_seeder(table: str) -> None:
 
 
 if __name__ == "__main__":
-    _api_posts_endpoint = "https://api.slingacademy.com/v1/sample-data/blog-posts"
+    _api_posts_endpoint = settings.SAMPLE_POST_API
     try:
         response = httpx.get(_api_posts_endpoint)
         response.raise_for_status()
@@ -85,7 +86,6 @@ if __name__ == "__main__":
                     content=blogs[i]['content_html']
                 )
             )
-
     except httpx.RequestError as exc:
         print(f"An error occurred while requesting {exc.request.url!r}.")
     except httpx.HTTPStatusError as exc:

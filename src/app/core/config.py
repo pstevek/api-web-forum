@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     TOKEN_EXPIRY: int
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     DEBUG: bool = True
+    SAMPLE_POST_API: str
+    TZ: str
 
 
 settings = Settings()
