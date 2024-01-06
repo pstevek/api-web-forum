@@ -13,9 +13,9 @@ class PostService:
         self.repository = post_repository
         self.tables = ["comments", "likes", "user"]
 
-    def get_all_posts(self, skip: int = 0, limit: int = 100):
+    def get_all_posts(self, skip: int = 0, limit: int = 100, query: str | None = None):
         try:
-            return self.repository.all(skip, limit, joint_tables=self.tables)
+            return self.repository.all(skip, limit, query, joint_tables=self.tables)
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -17,11 +17,11 @@ class BaseRepository:
     def __init__(self, db: db_dependency) -> None:
         self.db = db
 
-    def all(self, skip: int = 0, limit: int = 100, joint_tables=None) -> List[model]:
+    def all(self, filtered: Query, skip: int = 0, limit: int = 100, joint_tables=None) -> List[model]:
         query = self.db.query(self.model)
         query = self.add_joint_tables(query, joint_tables)
 
-        return query.filter(self.model.deleted_at.is_(None)) \
+        return query.filter(filtered) \
             .order_by(self.model.created_at.desc()) \
             .offset(skip) \
             .limit(limit) \

@@ -10,7 +10,17 @@ from slugify import slugify
 class PostRepository(BaseRepository):
     model = Post
 
-    def get_post_by_slug(self, slug: str, joint_tables=None) -> Post:
+    def all(self, query: str | None = None, skip: int = 0, limit: int = 100, joint_tables=None) -> List[model]:
+        filtered = self.model.deleted_at.is_(None)
+        if query is not None:
+            filtered = and_(
+                filtered,
+                self.model.content.contains(query)
+            )
+
+        return super().all(filtered, skip, limit, joint_tables)
+
+    def get_post_by_slug(self, slug: str, joint_tables=None) -> model:
         query = self.db.query(self.model)
         query = self.add_joint_tables(query, joint_tables)
 
@@ -21,7 +31,7 @@ class PostRepository(BaseRepository):
             )
         ).first()
 
-    def get_user_posts(self, user_id: int, skip: int = 0, limit: int = 100) -> List[Post]:
+    def get_user_posts(self, user_id: int, skip: int = 0, limit: int = 100) -> List[model]:
         return self.db.query(self.model).filter(
             and_(
                 self.model.user_id == user_id,
@@ -29,7 +39,7 @@ class PostRepository(BaseRepository):
             )
         ).offset(skip).limit(limit).all()
 
-    def create_user_post(self, user_id: int, request: PostCreate) -> Post:
+    def create_user_post(self, user_id: int, request: PostCreate) -> model:
         new_post = Post(
             user_id=user_id,
             title=request.title,
@@ -39,7 +49,7 @@ class PostRepository(BaseRepository):
 
         return super().create(object_in=new_post)
 
-    def create_post_comment(self, user_id: int, post: Post, request: CommentCreate) -> Post:
+    def create_post_comment(self, user_id: int, post: model, request: CommentCreate) -> model:
         comment = Comment(
             post_id=post.id,
             user_id=user_id,
@@ -51,7 +61,7 @@ class PostRepository(BaseRepository):
 
         return post
 
-    def create_post_like(self, user_id: int, post: Post) -> Post:
+    def create_post_like(self, user_id: int, post: model) -> model:
         like = Like(
             post_id=post.id,
             user_id=user_id
