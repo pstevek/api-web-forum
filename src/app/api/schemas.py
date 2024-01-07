@@ -87,3 +87,7 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class MetricResponse(BaseModel):
+    hour: int
+    post_count: int
+    comment_count: int

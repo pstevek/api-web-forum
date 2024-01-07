@@ -3,8 +3,9 @@ from app.api.models import Post, Comment, Like
 from app.api.repositories.base import BaseRepository
 from app.api.schemas import PostCreate, CommentCreate
 from app.core.database import use_database_session, persist_db
-from sqlalchemy import and_, desc, asc, func
+from sqlalchemy import and_, desc, func, extract
 from slugify import slugify
+from datetime import datetime, timedelta
 
 
 class PostRepository(BaseRepository):
@@ -83,6 +84,20 @@ class PostRepository(BaseRepository):
         persist_db(self.db, post)
 
         return post
+
+    def app_metrics(self):
+        now = func.now()
+        start_time = now - timedelta(days=1)
+
+        return self.db.query(
+            extract("hour", self.model.created_at).label("hour"),
+            func.count(self.model.id).label("post_count"),
+            func.count(Comment.id).label("comment_count"),
+        ).filter(
+            self.model.created_at >= start_time
+        ).outerjoin(
+            Comment, Comment.post_id == self.model.id
+        ).order_by("hour").group_by("hour").all()
 
 
 with use_database_session() as session:

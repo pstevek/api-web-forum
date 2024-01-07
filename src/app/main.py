@@ -9,6 +9,7 @@ from app.api.middlewares.logging import log_request_middleware
 from app.core.database import engine
 from app.core.config import settings
 from app.api.routes.index import api_router
+from app.api.routes.metrics import router as metrics_router
 from app.core.exception_handlers import (
     request_validation_exception_handler,
     http_exception_handler,
@@ -51,3 +52,4 @@ async def startup():
 
 # Load routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(metrics_router)

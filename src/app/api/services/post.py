@@ -104,5 +104,14 @@ class PostService:
                 detail=f"Error occurred while performing request :: {traceback.format_exc()}"
             )
 
+    def get_app_metrics(self):
+        try:
+            return self.repository.app_metrics()
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error occurred while performing request :: {traceback.format_exc()}"
+            )
+
 
 post_service = PostService()
