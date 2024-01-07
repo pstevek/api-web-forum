@@ -1,6 +1,6 @@
 import secrets
 from typing import List
-from pydantic import BaseSettings, AnyHttpUrl
+from pydantic import BaseSettings, AnyHttpUrl, RedisDsn
 
 
 class Settings(BaseSettings):
@@ -16,8 +16,10 @@ class Settings(BaseSettings):
     TOKEN_EXPIRY: int
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     DEBUG: bool = True
-    SAMPLE_POST_API: str
+    SAMPLE_POST_API: AnyHttpUrl
     TZ: str
+    REDIS_URL: RedisDsn
+    CACHE_TTL: int
 
 
 settings = Settings()

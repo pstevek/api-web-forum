@@ -78,7 +78,8 @@ class PostResponse(BasePost):
     is_misleading: bool
     likes: List[LikeResponse] = []
     comments: List[CommentResponse] = []
-    likes_count: int | None = None
+    total_likes: int | None = 0
+    total_comments: int | None = 0
 
 
 class TokenResponse(BaseModel):

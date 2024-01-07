@@ -5,6 +5,7 @@ services:
     container_name: barrows-db
     image: postgres:14-alpine
     restart: always
+    command: ["postgres", "-c", "log_statement=all"]
     env_file:
       - .env
     volumes:

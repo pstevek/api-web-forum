@@ -1,17 +1,18 @@
 from typing import List
 from fastapi import APIRouter, status
-from isort import comments
-
 from app.api import responses
+from fastapi_cache.decorator import cache
 from app.api.dependencies import token_dependency
 from app.api.schemas import PostResponse, PostCreate, CommentCreate, PostUpdate
 from app.api.services.auth import auth_service
 from app.api.services.post import post_service
+from app.core.config import settings
 
 router = APIRouter(prefix="/posts", tags=["Post Management"])
 
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=List[PostResponse])
+@cache(expire=settings.CACHE_TTL)
 async def get_all_posts(skip: int = 0, limit: int = 100, q: str | None = None):
     posts = post_service.get_all_posts(skip=skip, limit=limit, query=q)
 
@@ -19,6 +20,7 @@ async def get_all_posts(skip: int = 0, limit: int = 100, q: str | None = None):
 
 
 @router.get("/{post_slug}", status_code=status.HTTP_200_OK, response_model=PostResponse)
+@cache(expire=settings.CACHE_TTL)
 async def get_post(post_slug: str):
     post = post_service.get_post_by_slug(post_slug)
 

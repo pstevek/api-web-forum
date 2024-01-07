@@ -1,10 +1,8 @@
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
 from fastapi import FastAPI
-from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from starlette import status
-from starlette.exceptions import HTTPException
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from app.api import models
 from app.api.middlewares.logging import log_request_middleware
@@ -44,4 +42,12 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
+
+# Cache init
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.from_url(url=settings.REDIS_URL)
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
+# Load routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
