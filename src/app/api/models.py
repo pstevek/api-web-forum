@@ -2,6 +2,7 @@ from app.core.database import Base
 from sqlalchemy import Column, DateTime, String, Integer, ForeignKey, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 class Role(Base):
@@ -36,7 +37,8 @@ class User(Base):
     likes = relationship("Like", back_populates="user")
     comments = relationship("Comment", back_populates="user")
 
-    def full_name(self):
+    @hybrid_property
+    def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
 
@@ -56,6 +58,14 @@ class Post(Base):
     comments = relationship("Comment", back_populates="post")
     likes = relationship("Like", back_populates="post")
     user = relationship("User", back_populates="posts")
+
+    @hybrid_property
+    def total_likes(self) -> int:
+        return len(self.likes)
+
+    @hybrid_property
+    def total_comments(self) -> int:
+        return len(self.comments)
 
 
 class Comment(Base):
@@ -79,7 +89,6 @@ class Like(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     post_id = Column(Integer, ForeignKey("posts.id"))
-    content = Column(String)
     created_at = Column(DateTime(timezone=False), server_default=func.now())
     updated_at = Column(DateTime(timezone=False), onupdate=func.now())
     deleted_at = Column(DateTime(timezone=False))
