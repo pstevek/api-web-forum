@@ -3,6 +3,6 @@ from fastapi import APIRouter, status
 router = APIRouter(tags=["Home / Health"])
 
 
-@router.get("/")
-async def home(status_code=status.HTTP_200_OK):
+@router.get("/", status_code=status.HTTP_200_OK)
+async def home():
     return {"message": "Hello World"}
