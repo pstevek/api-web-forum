@@ -2,7 +2,7 @@ import logging
 import httpx
 import random
 from sqlalchemy.exc import IntegrityError
-from app.api.models import Role, User, Post
+from app.api.models import Role, User, Post, Like
 from app.core.database import SessionLocal
 from app.core.config import settings
 from slugify import slugify
@@ -55,6 +55,18 @@ tables = {
             created_at=datetime.now()
         )
     ],
+
+    'likes': [
+        Like(
+            user_id=2,
+            post_id=1
+        ),
+        Like(
+            user_id=3,
+            post_id=1
+        )
+    ],
+
     'posts': []
 }
 
@@ -94,3 +106,4 @@ if __name__ == "__main__":
     run_seeder("roles")
     run_seeder("users")
     run_seeder("posts")
+    run_seeder("likes")
