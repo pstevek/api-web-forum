@@ -13,7 +13,7 @@ router = APIRouter(prefix="/posts", tags=["Post Management"])
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=List[PostResponse])
 @cache(expire=settings.CACHE_TTL)
-async def get_all_posts(skip: int = 0, limit: int = 100, q: str | None = None):
+async def get_all_posts(skip: int = 0, limit: int = 10, q: str | None = None):
     posts = post_service.get_all_posts(skip=skip, limit=limit, query=q)
 
     return responses.format_posts_response(posts)

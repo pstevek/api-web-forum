@@ -15,7 +15,7 @@ class PostRepository(BaseRepository):
             self,
             query: str | None = None,
             skip: int = 0,
-            limit: int = 100,
+            limit: int = 10,
             joint_tables: list | None = None
     ) -> List[model]:
         orderby = None
@@ -44,7 +44,7 @@ class PostRepository(BaseRepository):
             )
         ).first()
 
-    def get_user_posts(self, user_id: int, skip: int = 0, limit: int = 100) -> List[model]:
+    def get_user_posts(self, user_id: int, skip: int = 0, limit: int = 10) -> List[model]:
         return self.db.query(self.model).filter(
             and_(
                 self.model.user_id == user_id,

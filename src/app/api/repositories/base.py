@@ -21,7 +21,7 @@ class BaseRepository:
             self,
             filtered: Query,
             skip: int = 0,
-            limit: int = 100,
+            limit: int = 10,
             orderby: Query | None = None,
             joint_tables: list | None = None
     ) -> List[model]:
