@@ -44,7 +44,7 @@ services:
       - barrows
 
   redis:
-    container_name: barrows-broker
+    container_name: barrows-cache
     image: redis:7.2.1-alpine3.18
     ports:
       - "6379:6379"
