@@ -16,7 +16,8 @@ class Settings(BaseSettings):
     TOKEN_EXPIRY: int
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     DEBUG: bool = True
-    SAMPLE_POST_API: AnyHttpUrl
+    SAMPLE_POSTS_API: AnyHttpUrl
+    SAMPLE_USERS_API: AnyHttpUrl
     TZ: str
     REDIS_URL: RedisDsn
     CACHE_TTL: int

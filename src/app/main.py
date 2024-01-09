@@ -2,6 +2,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 from fastapi import FastAPI
+from pydantic import ValidationError
 from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
 from app.api import models
@@ -12,8 +13,7 @@ from app.api.routes.index import api_router
 from app.api.routes.metrics import router as metrics_router
 from app.core.exception_handlers import (
     request_validation_exception_handler,
-    http_exception_handler,
-    unhandled_exception_handler
+    pydantic_validation_exception_handler,
 )
 
 # Database schemas initialization
@@ -30,8 +30,8 @@ app = FastAPI(
 # Middlewares
 app.middleware("http")(log_request_middleware)
 app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
-# app.add_exception_handler(HTTPException, http_exception_handler)
-# app.add_exception_handler(Exception, unhandled_exception_handler)
+app.add_exception_handler(ValidationError, pydantic_validation_exception_handler)
+
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
