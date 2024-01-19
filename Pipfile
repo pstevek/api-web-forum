@@ -54,6 +54,8 @@ uvloop = "==0.19.0"
 watchfiles = "==0.21.0"
 websockets = "==12.0"
 fastapi-cache2 = {extras = ["redis"], version = "*"}
+mypy = "*"
+ruff = "*"
 
 [dev-packages]
 

@@ -42,8 +42,12 @@ This program built for i386-apple-darwin11.3.0
 ````
 
 ### Instructions
-Run `make start`. It runs docker-compose with 3 services (app, db, cache).  
-This will build the app's Dockerfile, pull images for our other dependencies and start a Docker network with the necessary component for the app to run.  
+There's a Makefile with appropriate target scripts for all the operations needed to run this project. You can run `make help` at any moment to get insight in what each Make command does and of course inspect each script accordingly.
+
+1. Clone this repo and make sure you're on the `maaster` branch
+2. Run `make start`. This will start a Docker network with the necessary component for the app to run
+3. Once the network is up and running, we can migrate our schema and seed some data by running `make seed`
+4. You may follow server logs accross the docker network by running `make logs`  
 
 You're all set !
 
@@ -58,15 +62,23 @@ barrows-app      barrows-app              0.0.0.0:8000->8000/tcp   Up About a mi
 barrows-db       postgres:14-alpine       0.0.0.0:5432->5432/tcp   Up About a minute (healthy)
 barrows-redis    redis:7.2.1-alpine3.18   0.0.0.0:6379->6379/tcp   Up About a minute (healthy)
 ```
-We can seed some dummy data by running `make seed`.
+ \
+`barrows-app`: FastAPI app served via uvicorn on port 8000
+`barrows-db`: Standard PostgreSQL instance served and exposed on standard port 5432  
+`barrows-redis`: Redis Server used instance for caching
 
 ### Endpoints
-All endpoints can be visualised, together with their validation requirements in the Swagger Docs on `http://localhost/api/v1`.  
+The api is served on `localhost:8000/api/v1`  
+All endpoints can be visualised, together with their validation requirements in the Swagger Docs on `http://localhost:8000/api/docs`  
 \
-![image](./barrows-api-docs.png)
+![image](./assets/barrows-api-docs.png)
 \
 \
-A postman collection is also available at root level (`barrows-api-collection.json`)
+A postman collection is also available in the postman folder (`barrows-api-collection.json`)
 \
+
+### Token based authentication
+
+
 ### Testsuite
 WIP
