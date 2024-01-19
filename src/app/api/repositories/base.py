@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, TypeVar, Type, Optional, Dict, Union, List
+from typing import Any, TypeVar, Optional, Dict, Union, List
 from app.core.database import db_dependency, persist_db
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder

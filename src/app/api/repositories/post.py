@@ -5,7 +5,7 @@ from app.api.schemas import PostCreate, CommentCreate
 from app.core.database import use_database_session, persist_db
 from sqlalchemy import and_, desc, func, extract
 from slugify import slugify
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
 class PostRepository(BaseRepository):

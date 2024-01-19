@@ -24,7 +24,8 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     description=settings.PROJECT_DESCRIPTION,
     version="1.0",
-    debug=settings.DEBUG
+    debug=settings.DEBUG,
+    docs_url='/api/docs'
 )
 
 # Middlewares

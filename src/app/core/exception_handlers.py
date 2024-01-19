@@ -3,17 +3,11 @@ This is adapted from Roy Pasternak work
 Link : https://github.com/roy-pstr/fastapi-custom-exception-handlers-and-logs/blob/master/exception_handlers.py
 """
 
-import sys
-from typing import Union
 from fastapi import Request, status
 from fastapi.encoders import jsonable_encoder
-from fastapi.exception_handlers import http_exception_handler as _http_exception_handler
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from fastapi.responses import JSONResponse
-from fastapi.responses import PlainTextResponse
-from fastapi.responses import Response
-from datetime import datetime
 
 from app.core.logger import logger
 
