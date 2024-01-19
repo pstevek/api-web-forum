@@ -63,9 +63,9 @@ barrows-db       postgres:14-alpine       0.0.0.0:5432->5432/tcp   Up About a mi
 barrows-redis    redis:7.2.1-alpine3.18   0.0.0.0:6379->6379/tcp   Up About a minute (healthy)
 ```
  \
-`barrows-app`: FastAPI app served via uvicorn on port 8000
+`barrows-app`: FastAPI app served via uvicorn on port 8000  
 `barrows-db`: Standard PostgreSQL instance served and exposed on standard port 5432  
-`barrows-redis`: Redis Server used instance for caching
+`barrows-redis`: Redis Server used instance for caching  
 
 ### API Documentation
 FastAPI natively supports OpenAPI specification out of the box.  
