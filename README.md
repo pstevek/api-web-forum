@@ -75,7 +75,7 @@ Swagger UI Docs are available on `http://localhost:8000/api/docs`
 ![image](./assets/barrows-api-docs.png)
 
 ### Endpoints
-The api is served on `localhost:8000/api/v1`
+The api is served on `localhost:8000/api/v1`  
 A postman collection is also available in the postman folder (`barrows-api-collection.json`)  
 Once you import the collection you should have something like this:  
 \
