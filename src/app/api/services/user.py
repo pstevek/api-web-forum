@@ -12,7 +12,7 @@ class UserService:
     def is_admin(self, user: User) -> bool:
         return self.repository.is_admin(user)
 
-    def create_user(self, request: UserCreate) -> User | HTTPException:
+    def create_user(self, request: UserCreate) -> User:
         try:
             return self.repository.create(user_request=request)
         except Exception:
@@ -21,7 +21,7 @@ class UserService:
                 detail=f"Error occurred while performing request :: {traceback.format_exc()}"
             )
 
-    def update_user(self, request: UserUpdate, user: User) -> User | HTTPException:
+    def update_user(self, request: UserUpdate, user: User) -> User:
         try:
             return self.repository.update(user_request=request, user=user)
         except Exception:

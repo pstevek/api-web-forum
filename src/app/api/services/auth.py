@@ -27,7 +27,7 @@ class AuthService:
 
         return encoded_jwt
 
-    def authenticate_user(self, request: Annotated[OAuth2PasswordRequestForm, Depends()]) -> User | HTTPException:
+    def authenticate_user(self, request: Annotated[OAuth2PasswordRequestForm, Depends()]) -> User:
         try:
             user = self.repository.get_by_username(request.username)
         except Exception:

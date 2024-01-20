@@ -22,7 +22,7 @@ class PostService:
                 detail=f"Error occurred while performing request :: {traceback.format_exc()}"
             )
 
-    def get_post_by_id(self, post_id: int) -> Post | HTTPException:
+    def get_post_by_id(self, post_id: int) -> Post:
         try:
             post = self.repository.get(model_id=post_id, joint_tables=self.tables)
         except Exception:
@@ -36,7 +36,7 @@ class PostService:
 
         return post
 
-    def get_post_by_slug(self, slug: str) -> Post | HTTPException:
+    def get_post_by_slug(self, slug: str) -> Post:
         try:
             post = self.repository.get_post_by_slug(slug=slug, joint_tables=self.tables)
         except Exception:
@@ -50,7 +50,7 @@ class PostService:
 
         return post
 
-    def create_user_post(self, user: User, request: PostCreate) -> Post | HTTPException:
+    def create_user_post(self, user: User, request: PostCreate) -> Post:
         try:
             return self.repository.create_user_post(user_id=user.id, request=request)
         except Exception:
