@@ -2,9 +2,9 @@ from typing import List
 from app.api.models import Post, Comment, Like
 from app.api.repositories.base import BaseRepository
 from app.api.schemas import PostCreate, CommentCreate
-from app.core.database import use_database_session, persist_db
+from app.core.database import use_database_session
+from app.core.helpers import slugify_string
 from sqlalchemy import and_, desc, func, extract
-from slugify import slugify
 from datetime import timedelta
 
 
@@ -17,7 +17,7 @@ class PostRepository(BaseRepository):
             skip: int = 0,
             limit: int = 10,
             joint_tables: list | None = None
-    ) -> List[model]:
+    ) -> List[Post]:
         orderby = None
         filtered = self.model.deleted_at.is_(None)
         if query is not None:
@@ -33,7 +33,7 @@ class PostRepository(BaseRepository):
             skip=skip, limit=limit, filtered=filtered, orderby=orderby, joint_tables=joint_tables
         )
 
-    def get_post_by_slug(self, slug: str, joint_tables=None) -> model:
+    def get_post_by_slug(self, slug: str, joint_tables=None) -> Post:
         query = self.db.query(self.model)
         query = self.add_joint_tables(query, joint_tables)
 
@@ -44,7 +44,7 @@ class PostRepository(BaseRepository):
             )
         ).first()
 
-    def get_user_posts(self, user_id: int, skip: int = 0, limit: int = 10) -> List[model]:
+    def get_user_posts(self, user_id: int, skip: int = 0, limit: int = 10) -> List[Post]:
         return self.db.query(self.model).filter(
             and_(
                 self.model.user_id == user_id,
@@ -52,17 +52,17 @@ class PostRepository(BaseRepository):
             )
         ).offset(skip).limit(limit).all()
 
-    def create_user_post(self, user_id: int, request: PostCreate) -> model:
+    def create_user_post(self, user_id: int, request: PostCreate) -> Post:
         new_post = Post(
             user_id=user_id,
             title=request.title,
             content=request.content,
-            slug=slugify(request.title)
+            slug=slugify_string(request.title)
         )
 
         return super().create(object_in=new_post)
 
-    def create_post_comment(self, user_id: int, post: model, request: CommentCreate) -> model:
+    def create_post_comment(self, user_id: int, post: Post, request: CommentCreate) -> Post:
         comment = Comment(
             post_id=post.id,
             user_id=user_id,
@@ -70,18 +70,18 @@ class PostRepository(BaseRepository):
         )
 
         post.comments.append(comment)
-        persist_db(self.db, post)
+        self.persist_db(post)
 
         return post
 
-    def create_post_like(self, user_id: int, post: model) -> model:
+    def create_post_like(self, user_id: int, post: Post) -> Post:
         like = Like(
             post_id=post.id,
             user_id=user_id
         )
 
         post.likes.append(like)
-        persist_db(self.db, post)
+        self.persist_db(post)
 
         return post
 

@@ -1,5 +1,3 @@
-from typing import Annotated
-from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
@@ -14,7 +12,6 @@ SQLALCHEMY_DATABASE_URL = "postgresql://{}:{}@{}:5432/{}".format(
 )
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
 session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 SessionLocal = scoped_session(session_factory)
 
@@ -41,12 +38,3 @@ class DatabaseSessionMixin:
 
 def use_database_session():
     return DatabaseSessionMixin()
-
-
-db_dependency = Annotated[Session, Depends(use_database_session)]
-
-
-def persist_db(db: db_dependency, model: Base) -> None:
-    db.add(model)
-    db.commit()
-    db.refresh(model)

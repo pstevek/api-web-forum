@@ -1,18 +1,20 @@
 from datetime import datetime
-from typing import Any, TypeVar, Optional, Dict, Union, List
-from app.core.database import db_dependency, persist_db
+from typing import Any, Annotated, TypeVar, Optional, Dict, Union, List, Type
+from app.core.database import use_database_session
 from pydantic import BaseModel
+from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import joinedload, Query
+from sqlalchemy.orm import joinedload, Query, Session
 from sqlalchemy import and_
 
-ModelType = TypeVar("ModelType", bound=Any)
+ModelType = TypeVar("ModelType", bound=BaseModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
+db_dependency = Annotated[Session, Depends(use_database_session)]
 
 
 class BaseRepository:
-    model = ModelType
+    model: Type[ModelType] = BaseModel
 
     def __init__(self, db: db_dependency) -> None:
         self.db = db
@@ -52,7 +54,7 @@ class BaseRepository:
         request_data = jsonable_encoder(object_in)
         db_obj = self.model(**request_data)
 
-        persist_db(self.db, db_obj)
+        self.persist_db(db_obj)
 
         return db_obj
 
@@ -64,7 +66,7 @@ class BaseRepository:
             if field in update_data:
                 setattr(db_obj, field, update_data[field])
 
-        persist_db(self.db, db_obj)
+        self.persist_db(db_obj)
 
         return db_obj
 
@@ -83,3 +85,8 @@ class BaseRepository:
                     query = query.options(joinedload(getattr(self.model, table)))
 
         return query
+
+    def persist_db(self, obj: model) -> None:
+        self.db.add(obj)
+        self.db.commit()
+        self.db.refresh(obj)
