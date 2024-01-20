@@ -1,7 +1,8 @@
 #!/bin/sh
 
 set -e
+set -o pipefail
 
-echo "Seeding tables..."
+echo "\n> Migrate (Refresh) and Seed test data"
 docker exec -it barrows-app python seeder.py
-echo "Seeding completed"
+echo "\n> Seeding completed"
