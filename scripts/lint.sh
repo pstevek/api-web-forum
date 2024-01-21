@@ -3,6 +3,6 @@
 set -e
 set -o pipefail
 
-echo "\n> Linting API with Ruff\n"
+echo "\n> Linting API with Ruff"
 docker exec -it barrows-app ruff check --fix .
-echo "> Done !"
+echo "\n> Done !"

@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose.yml
+.docker
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+*.py[cod]
+*/*.py[cod]
+*/*/*.py[cod]
+*/*/*/*.py[cod]
+
+
+# Test / Linting cache stores
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
