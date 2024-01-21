@@ -2,7 +2,6 @@ from typing import List
 from app.api.models import Post, Comment, Like
 from app.api.repositories.base import BaseRepository
 from app.api.schemas import PostCreate, CommentCreate
-from app.core.database import use_database_session
 from app.core.helpers import slugify_string
 from sqlalchemy import and_, desc, func, extract
 from datetime import timedelta
@@ -100,5 +99,4 @@ class PostRepository(BaseRepository):
         ).order_by("hour").group_by("hour").all()
 
 
-with use_database_session() as session:
-    post_repository = PostRepository(db=session)
+post_repository = PostRepository()

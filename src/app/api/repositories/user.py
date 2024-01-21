@@ -1,8 +1,8 @@
 from app.api.repositories.base import BaseRepository
-from app.core.database import use_database_session
 from app.api.models import User
 from app.api.schemas import UserCreate, UserUpdate
 from app.api.dependencies import pwd_context
+from sqlalchemy.orm import joinedload
 from sqlalchemy import and_
 
 
@@ -10,7 +10,7 @@ class UserRepository(BaseRepository):
     model = User
 
     def get_by_username(self, username: str) -> User:
-        return self.db.query(self.model).filter(
+        return self.db.query(self.model).options(joinedload(User.role)).filter(
             and_(
                 User.username == username,
                 User.deleted_at.is_(None)
@@ -42,6 +42,4 @@ class UserRepository(BaseRepository):
         return user.role.slug == 'moderator'
 
 
-with use_database_session() as session:
-    user_repository = UserRepository(db=session)
-
+user_repository = UserRepository()

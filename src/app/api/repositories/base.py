@@ -1,23 +1,22 @@
 from datetime import datetime
-from typing import Any, Annotated, TypeVar, Optional, Dict, Union, List, Type
+from typing import Any, TypeVar, Optional, Dict, Union, List, Type
 from app.core.database import use_database_session
 from pydantic import BaseModel
-from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import joinedload, Query, Session
+from sqlalchemy.orm import joinedload, Query
 from sqlalchemy import and_
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
-db_dependency = Annotated[Session, Depends(use_database_session)]
 
 
 class BaseRepository:
     model: Type[ModelType] = BaseModel
 
-    def __init__(self, db: db_dependency) -> None:
-        self.db = db
+    def __init__(self) -> None:
+        with use_database_session() as session:
+            self.db = session
 
     def all(
             self,
