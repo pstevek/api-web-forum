@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+pythonpath = "src"
+env = [
+    "TEST_MODE=True"
+]
+addopts = [
+    "--import-mode=importlib",
+]

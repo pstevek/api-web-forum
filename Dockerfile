@@ -7,6 +7,7 @@ ENV PYTHONUNBUFFERED 1
 # Copy dependencies accross
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./src /src
+COPY ./pyproject.toml /src/pyproject.toml
 
 WORKDIR /src
 

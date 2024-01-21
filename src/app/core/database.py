@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.pool import StaticPool
 from sqlalchemy.orm import Session, sessionmaker, scoped_session
 from app.core.config import settings
 
@@ -10,11 +11,22 @@ SQLALCHEMY_DATABASE_URL = "postgresql://{}:{}@{}:5432/{}".format(
     settings.DB_HOST,
     settings.DB_NAME,
 )
+TEST_SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-SessionLocal = scoped_session(session_factory)
+test_engine = create_engine(
+    TEST_SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
 
+session_factory = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=test_engine if settings.TEST_MODE else engine
+)
+
+SessionLocal = scoped_session(session_factory)
 Base = declarative_base()
 
 

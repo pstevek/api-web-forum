@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     TZ: str
     REDIS_URL: RedisDsn
     CACHE_TTL: int
+    TEST_MODE: bool
 
 
 settings = Settings()

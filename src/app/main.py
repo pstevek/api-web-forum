@@ -5,9 +5,7 @@ from fastapi import FastAPI
 from pydantic import ValidationError
 from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
-from app.api import models
 from app.api.middlewares.logging import log_request_middleware
-from app.core.database import engine
 from app.core.config import settings
 from app.api.routes.index import api_router
 from app.api.routes.metrics import router as metrics_router
@@ -16,8 +14,6 @@ from app.core.exception_handlers import (
     pydantic_validation_exception_handler,
 )
 
-# Database schemas initialization
-models.Base.metadata.create_all(bind=engine)
 
 # App initialization
 app = FastAPI(
