@@ -21,7 +21,7 @@ Here is the full tech stack for this project:
 - Redis (caching layer)
 
 Some notable package dependencies:
-- SQLAlchemy 1.4 (ORM layer for database intereaction)
+- SQLAlchemy 1.4 (ORM layer for database interaction)
 - Pydantic (Data validation)
 
 ### Requirements
@@ -100,8 +100,33 @@ curl -X 'POST' \
 5. You should be good to go now ! All protected routes will inherit the Bearer token
 6. There's a Moderator level user seeded with username / password as `admin/admin`. You may use this user to confirm elevated privileges actions like marking a post as misleading.
 
+### Caching
+FastAPI's uvicorn server is already quite fast. However, we want to ideally reduce the load on our database for every GET request that can be cached as opposed to always hitting the database directly.  
+We use Redis for our caching server. Every GET requests on posts are cached and subsequent requests will hit the Redis instead. This is already embedded in Swagger UI.  
+For Postman, include the `Cache-Control: max-age` header in the `GET posts` or `GET posts/{post_slug}`. You can also observe the logs to make sure there's no database interaction during this process
+
 ### Testsuite
-WIP
+You can run tests using the Make command `make test`. It is powered by PyTest and runs using a SQLite Database as opposed to the main PostgreSQL database.
+```bash
+./scripts/test.sh
+
+> Running Test suite
+
+=============================================================================================== test session starts ================================================================================================
+platform linux -- Python 3.11.7, pytest-7.4.3, pluggy-1.3.0
+rootdir: /src
+plugins: time-machine-2.13.0, anyio-3.7.1
+collected 6 items
+
+tests/test_auth.py ..                                                                                                                                                                                        [ 33%]
+tests/test_home.py .                                                                                                                                                                                         [ 50%]
+tests/test_posts.py .                                                                                                                                                                                        [ 66%]
+tests/test_users.py ..                                                                                                                                                                                       [100%]
+
+========================================================================================== 6 passed, 5 warnings in 4.70s ===========================================================================================
+
+> Completed !
+```
 
 ## Conclusion
 That's the end of my assessment. Thank you very much for your patience and giving me enough time to do this.  
