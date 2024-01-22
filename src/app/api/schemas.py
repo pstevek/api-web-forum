@@ -64,8 +64,9 @@ class BasePost(BaseModel):
     deleted_at: datetime | None = None
 
 
-class PostCreate(BasePost):
-    slug: str | None = None
+class PostCreate(BaseModel):
+    title: str
+    content: str
 
 
 class PostUpdate(BaseModel):

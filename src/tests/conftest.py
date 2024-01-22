@@ -5,6 +5,14 @@ from app.main import app
 from app.core.config import settings
 from seeder import tables
 
+test_users: dict = {
+    "username": "SeanCarrington",
+    "email": "sean@gmail.com",
+    "first_name": "Sean",
+    "last_name": "Carrington",
+    "password": "password_one"
+}
+
 
 @pytest.fixture()
 def setup_test_db():
@@ -17,4 +25,7 @@ def setup_test_db():
     Base.metadata.drop_all(bind=test_engine)
 
 
-client = TestClient(app)
+@pytest.fixture(scope="module")
+def client():
+    with TestClient(app) as c:
+        yield c
