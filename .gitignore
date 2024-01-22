@@ -110,4 +110,4 @@ venv.bak/
 
 # Docker volume
 data/
-test.db
+*.db

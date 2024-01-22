@@ -1,5 +1,4 @@
 from fastapi import status
-from tests.conftest import client
 from app.core.config import settings
 
 

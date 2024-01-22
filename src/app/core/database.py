@@ -11,7 +11,7 @@ SQLALCHEMY_DATABASE_URL = "postgresql://{}:{}@{}:5432/{}".format(
     settings.DB_HOST,
     settings.DB_NAME,
 )
-TEST_SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+TEST_SQLALCHEMY_DATABASE_URL = "sqlite:///./barrows_test.db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 test_engine = create_engine(

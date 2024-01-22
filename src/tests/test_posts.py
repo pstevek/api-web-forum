@@ -3,9 +3,6 @@ from app.core.config import settings
 from app.api.services.post import post_service
 from app.api.services.user import user_service
 from app.api.schemas import UserCreate, PostCreate
-from passlib.context import CryptContext
-
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
 def test_get_user_posts(setup_test_db, client):
@@ -27,8 +24,6 @@ def test_get_user_posts(setup_test_db, client):
         post_service.create_user_post(user, PostCreate(**post_details))
 
     response = client.get(url=f"{settings.API_V1_STR}/posts")
-
-    print('### RESPONSE_DATA ###', response.json())
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == post_number
