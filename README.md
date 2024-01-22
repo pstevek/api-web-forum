@@ -128,6 +128,9 @@ tests/test_users.py ..                                                          
 > Completed !
 ```
 
+## Clean up
+Make sure to run `make clean` after you're done testing. This will delete any environment variables, datastores, as well as destroy all docker ressources (images, volumes, containers, etc) provisioned for this assessment.  
+
 ## Conclusion
 That's the end of my assessment. Thank you very much for your patience and giving me enough time to do this.  
 I appreciate the consideration  
