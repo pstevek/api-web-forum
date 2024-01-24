@@ -47,7 +47,7 @@ There's a Makefile with appropriate target scripts for all the operations needed
 1. Clone this repo and make sure you're on the `maaster` branch
 2. Run `make start`. This will start a Docker network with the necessary component for the app to run
 3. Once the network is up and running, we can migrate our schema and seed some data by running `make seed`
-4. You may follow server logs accross the docker network by running `make logs`  
+4. You may follow server logs across the docker network by running `make logs`  
 
 You're all set !
 
@@ -128,8 +128,22 @@ tests/test_users.py ..                                                          
 > Completed !
 ```
 
-## Clean up
-Make sure to run `make clean` after you're done testing. This will delete any environment variables, datastores, as well as destroy all docker ressources (images, volumes, containers, etc) provisioned for this assessment.  
+### Clean up
+Make sure to run `make clean` after you're done testing. This will delete any environment variables, datastore's, as well as destroy all docker resources (images, volumes, containers, etc) provisioned for this assessment.  
+
+
+### API Security tips
+We can mitigate abuse on our API by implementing some common safeguards:
+- <ins>Rate Limiting:</ins>  
+We can restrict the number of requests a client can make to our API within a specific time frame. This will be our first line of defense against DDoS attacks, bot spamming, and Data scrapping.  
+One way of implementing this in FastAPI by defining a custom decorator that will set the maximum number of requests allowed, compute the time interval in which said requests occurred, and compare with a time frame we define as limit.
+Non-compliant requests will result in a `429 Too Many Requests`. We should also log all incoming requests and responses (some of which I have already done through a logging middleware). This will help us carry out security audits and identify potential vulnerabilities.
+- <ins>Enforce HTTPS</ins>   
+Depending on whether our API will be public facing (e.g. Headless CMS) we could add a security layer when deploying to production by having uvicorn enforce an TLS/SSL certificate which would enable HTTPS.  
+- <ins>API Gateway</ins>
+A common design pattern for REST APIs is to abstract the APIs themselves from the client and introduce a middleman proxy called an API Gateway. Most of the already discussed security measures will be addressed in this layer given that it will be public facing. e.g. Load balancing, API monitoring, IP whitelisting, Caching, protocol translation and service discovery. It will be the sole consumer of our API given that our API will now be private facing. An API Gateway therefore acts as a single point of entry for our API. Another similar pattern to this is the Backend-for-frontend pattern. The difference here however, is that instead of a single point of entry, backend-for-frontend, as the name suggest, is tightly coupled to the presentation layer. Which means a web app will one its own bff, and a mobile app will have its own bff.
+
+
 
 ## Conclusion
 That's the end of my assessment. Thank you very much for your patience and giving me enough time to do this.  
