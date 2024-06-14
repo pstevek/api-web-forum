@@ -44,7 +44,7 @@ There's a Makefile with appropriate target scripts for all the operations needed
 
 1. Clone this repo and make sure you're on the `master` branch
 2. Run `make start`. This will start a Docker network with the necessary component for the app to run
-3. Once the network is up and running, we can migrate our schema and seed some data by running `make seed`
+3. Once the network is up and running, we can migrate our schema and seed some data by running `make migrate`
 4. You may follow server logs across the docker network by running `make logs`  
 
 You're all set !
