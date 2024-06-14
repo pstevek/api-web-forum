@@ -72,14 +72,14 @@ Swagger UI Docs are available on `http://localhost:8000/api/docs`
 \
 ![image](./assets/forum-api-docs.png)
 
-### Endpoints
+## Endpoints
 The api is served on `localhost:8000/api/v1`  
 A postman collection is also available in the postman folder (`forum-api-collection.json`)  
 Once you import the collection you should have something like this:  
 \
 ![image](./assets/forum-postman-collection.png)
 > You may also you the Swagger UI Docs to carry out your tests. Postman is entirely optional
-### API  authentication
+## API  authentication
 Our REST API supports JWT based authentication. This means every login request will produce a token which will then be embedded in the Header in every subsequent authenticated request as a Bearer token:  
 1. Visit the "Login User" endpoint (`POST http://localhost:8000/api/v1/auth/login`)
 2. In postman, there are some default credentials included in the collection already. Full CURL request:
