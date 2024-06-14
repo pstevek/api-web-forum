@@ -1,11 +1,11 @@
-## Introduction
+# Introduction
 This repository covers the implementation for building a Web text forum with the following requirements:  
 You are tasked with building the API and datastore backend of a web forum for a small number
 of users (< 100). The forum is a basic text system which has the capabilities to add posts,
 retrieve posts, and like posts. Management does not believe in users editing or deleting existing
 posts, for ethical reasons.
 
-## Solution
+# Solution
 I will be building a REST API using [FastAPI](https://fastapi.tiangolo.com/) :zap:.  
 FastAPI is a minimalistic microframework, renowned for its performance, excellent documentation, security features, and advanced features like strict typing thanks to Pydantic.  
 One of my favorite features of FastAPI is its automatic documentation built on top of OpenAPI Specification.  
@@ -22,7 +22,7 @@ Some notable package dependencies:
 - SQLAlchemy 1.4 (ORM layer for database interaction)
 - Pydantic (Data validation)
 
-### Requirements
+## Requirements
 You will only need Docker & GNU Make for this assessment   
 ```bash
 $ docker --version
@@ -39,7 +39,7 @@ PARTICULAR PURPOSE.
 This program built for i386-apple-darwin11.3.0
 ````
 
-### Instructions
+## Instructions
 There's a Makefile with appropriate target scripts for all the operations needed to run this project. You can run `make help` at any moment to get insight in what each Make command does and of course inspect each script accordingly.
 
 1. Clone this repo and make sure you're on the `master` branch
@@ -65,7 +65,7 @@ forum-redis    redis:7.2.1-alpine3.18   0.0.0.0:6379->6379/tcp   Up About a minu
 `forum-db`: Standard PostgreSQL instance served and exposed on standard port 5432  
 `forum-redis`: Redis Server used instance for caching  
 
-### API Documentation
+## API Documentation
 FastAPI natively supports OpenAPI specification out of the box.  
 Swagger UI Docs are available on `http://localhost:8000/api/docs` 
 \
@@ -98,12 +98,12 @@ curl -X 'POST' \
 5. You should be good to go now ! All protected routes will inherit the Bearer token
 6. There's a Moderator level user seeded with username / password as `admin/admin`. You may use this user to confirm elevated privileges actions like marking a post as misleading.
 
-### Caching
+## Caching
 FastAPI's uvicorn server is already quite fast. However, we want to ideally reduce the load on our database for every GET request that can be cached as opposed to always hitting the database directly.  
 We use Redis for our caching server. Every GET requests on posts are cached and subsequent requests will hit the Redis instead. This is already embedded in Swagger UI.  
 For Postman, include the `Cache-Control: max-age` header in the `GET posts` or `GET posts/{post_slug}`. You can also observe the logs to make sure there's no database interaction during this process
 
-### Testsuite
+## Testsuite
 You can run tests using the Make command `make test`. It is powered by PyTest and runs using a SQLite Database as opposed to the main PostgreSQL database.
 ```bash
 ./scripts/test.sh
@@ -126,11 +126,11 @@ tests/test_users.py ..                                                          
 > Completed !
 ```
 
-### Clean up
+## Clean up
 Make sure to run `make clean` after you're done testing. This will delete any environment variables, datastore's, as well as destroy all docker resources (images, volumes, containers, etc) provisioned for this assessment.  
 
 
-### API Security tips
+## API Security tips
 We can mitigate abuse on our API by implementing some common safeguards:
 - <ins>Rate Limiting:</ins>  
 We can restrict the number of requests a client can make to our API within a specific time frame. This will be our first line of defense against DDoS attacks, bot spamming, and Data scrapping.  
@@ -143,7 +143,7 @@ A common design pattern for REST APIs is to abstract the APIs themselves from th
 
 
 
-## Conclusion
+# Conclusion
 We have now build a minimalistic API for a web forum.  
 There is obviously much more to be done here, but that should be a good starting point.
 
