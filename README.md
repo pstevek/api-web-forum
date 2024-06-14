@@ -1,5 +1,3 @@
-# Barrows Back-end Assessment
-
 ## Introduction
 This repository covers the implementation for building a Web text forum with the following requirements:  
 You are tasked with building the API and datastore backend of a web forum for a small number
@@ -44,7 +42,7 @@ This program built for i386-apple-darwin11.3.0
 ### Instructions
 There's a Makefile with appropriate target scripts for all the operations needed to run this project. You can run `make help` at any moment to get insight in what each Make command does and of course inspect each script accordingly.
 
-1. Clone this repo and make sure you're on the `maaster` branch
+1. Clone this repo and make sure you're on the `master` branch
 2. Run `make start`. This will start a Docker network with the necessary component for the app to run
 3. Once the network is up and running, we can migrate our schema and seed some data by running `make seed`
 4. You may follow server logs across the docker network by running `make logs`  
