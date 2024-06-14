@@ -144,8 +144,9 @@ A common design pattern for REST APIs is to abstract the APIs themselves from th
 
 
 ## Conclusion
-That's the end of my assessment. Thank you very much for your patience and giving me enough time to do this.  
-I appreciate the consideration  
+We have now build a minimalistic API for a web forum.  
+There is obviously much more to be done here, but that should be a good starting point.
+
 \
 Steve Kamanke  
 https://www.stevekamanke.com
