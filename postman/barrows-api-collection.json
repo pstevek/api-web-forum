@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "834f886c-c809-4bcd-82f8-ac113f2e7423",
-		"name": "Barrows API",
+		"name": "Forum Web API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21437874"
 	},
@@ -69,7 +69,7 @@
 					"urlencoded": [
 						{
 							"key": "username",
-							"value": "user.barrows",
+							"value": "test.user",
 							"type": "text"
 						},
 						{

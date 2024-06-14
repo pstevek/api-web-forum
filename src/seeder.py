@@ -45,10 +45,10 @@ tables = {
             created_at=datetime.now(),
         ),
         models.User(
-            email="user@barrows.co.za",
+            email="user@forum.co.za",
             first_name="Test",
             last_name="User",
-            username="user.barrows",
+            username="test.user",
             password=pwd_context.hash('password'),
             role_id=2,
             created_at=datetime.now(),

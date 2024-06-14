@@ -56,28 +56,28 @@ $ docker container ls -a --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.
 You should get a response similar to this:
 ```bash
 NAMES            IMAGE                    PORTS                    STATUS
-barrows-app      barrows-app              0.0.0.0:8000->8000/tcp   Up About a minute
-barrows-db       postgres:14-alpine       0.0.0.0:5432->5432/tcp   Up About a minute (healthy)
-barrows-redis    redis:7.2.1-alpine3.18   0.0.0.0:6379->6379/tcp   Up About a minute (healthy)
+forum-app      forum-app              0.0.0.0:8000->8000/tcp   Up About a minute
+forum-db       postgres:14-alpine       0.0.0.0:5432->5432/tcp   Up About a minute (healthy)
+forum-redis    redis:7.2.1-alpine3.18   0.0.0.0:6379->6379/tcp   Up About a minute (healthy)
 ```
  \
-`barrows-app`: FastAPI app served via uvicorn on port 8000  
-`barrows-db`: Standard PostgreSQL instance served and exposed on standard port 5432  
-`barrows-redis`: Redis Server used instance for caching  
+`forum-app`: FastAPI app served via uvicorn on port 8000  
+`forum-db`: Standard PostgreSQL instance served and exposed on standard port 5432  
+`forum-redis`: Redis Server used instance for caching  
 
 ### API Documentation
 FastAPI natively supports OpenAPI specification out of the box.  
 Swagger UI Docs are available on `http://localhost:8000/api/docs` 
 \
 \
-![image](./assets/barrows-api-docs.png)
+![image](./assets/forum-api-docs.png)
 
 ### Endpoints
 The api is served on `localhost:8000/api/v1`  
-A postman collection is also available in the postman folder (`barrows-api-collection.json`)  
+A postman collection is also available in the postman folder (`forum-api-collection.json`)  
 Once you import the collection you should have something like this:  
 \
-![image](./assets/barrows-postman-collection.png)
+![image](./assets/forum-postman-collection.png)
 > You may also you the Swagger UI Docs to carry out your tests. Postman is entirely optional
 ### API  authentication
 Our REST API supports JWT based authentication. This means every login request will produce a token which will then be embedded in the Header in every subsequent authenticated request as a Bearer token:  
@@ -88,13 +88,13 @@ curl -X 'POST' \
   'http://localhost:8000/api/v1/auth/login' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'grant_type=&username=user.barrows&password=password'
+  -d 'grant_type=&username=test.user&password=password'
 ```
 3. The output should be something like this:
-![image](./assets/barrows-api-login-request.png)  
+![image](./assets/forum-api-login-request.png)  
 
 4. Copy the `access_token`. Back to collection page, include the Bearer token in the Authorization section
-![image](./assets/barrows-api-auth-token.png)
+![image](./assets/forum-api-auth-token.png)
 5. You should be good to go now ! All protected routes will inherit the Bearer token
 6. There's a Moderator level user seeded with username / password as `admin/admin`. You may use this user to confirm elevated privileges actions like marking a post as misleading.
 
