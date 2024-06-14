@@ -56,12 +56,12 @@ $ docker container ls -a --format "table {{.Names}}\t{{.Image}}\t{{.Ports}}\t{{.
 You should get a response similar to this:
 ```bash
 NAMES            IMAGE                    PORTS                    STATUS
-forum-app      forum-app              0.0.0.0:8000->8000/tcp   Up About a minute
+forum-api      forum-api                0.0.0.0:8000->8000/tcp   Up About a minute
 forum-db       postgres:14-alpine       0.0.0.0:5432->5432/tcp   Up About a minute (healthy)
 forum-redis    redis:7.2.1-alpine3.18   0.0.0.0:6379->6379/tcp   Up About a minute (healthy)
 ```
  \
-`forum-app`: FastAPI app served via uvicorn on port 8000  
+`forum-api`: FastAPI app served via uvicorn on port 8000
 `forum-db`: Standard PostgreSQL instance served and exposed on standard port 5432  
 `forum-redis`: Redis Server used instance for caching  
 
